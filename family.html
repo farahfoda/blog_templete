@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Family ❤️</title>
+<style>
+body {
+  margin: 0;
+  height: 100vh;
+  background: linear-gradient(270deg, #ffe4e1, #ffd1dc, #ffdfba, #ffe4e1);
+  background-size: 800% 800%;
+  animation: gradientBG 20s ease infinite;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Comic Sans MS', cursive;
+}
+
+@keyframes gradientBG {
+  0% {background-position:0% 50%;}
+  50% {background-position:100% 50%;}
+  100% {background-position:0% 50%;}
+}
+
+.heart, .bubble {
+  position: absolute;
+  font-size: 18px;
+  animation: floatUp 6s linear infinite;
+  opacity: 0.7;
+}
+
+.bubble {
+  color: #ffb6c1;
+  font-size: 12px;
+  opacity: 0.5;
+}
+
+@keyframes floatUp {
+  0% { transform: translateY(100vh) translateX(0) rotate(0deg); opacity:1; }
+  100% { transform: translateY(-10vh) translateX(50px) rotate(360deg); opacity:0; }
+}
+
+#clickText {
+  font-size: 60px;
+  font-weight: bold;
+  color: red;
+  text-shadow: 0 0 15px white;
+  cursor: pointer;
+  animation: glow 1.2s infinite alternate, bounce 1.5s infinite ease-in-out;
+  z-index: 10;
+}
+
+@keyframes glow {
+  0% { text-shadow: 0 0 10px #fff, 0 0 20px #ff004c; }
+  100% { text-shadow: 0 0 20px #fff, 0 0 40px #ff004c; }
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-15px); }
+}
+
+#myFamilyTitle {
+  display: none;
+  font-size: 48px;
+  font-weight: bold;
+  color: #ff004c;
+  text-shadow: 0 0 20px white;
+  margin-bottom: 20px;
+  animation: appear 1s ease forwards;
+}
+
+@keyframes appear {
+  from { transform: scale(0.5); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+#slideshow {
+  display: none;
+  width: 600px;
+  height: 400px;
+  position: relative;
+  overflow: hidden;
+  border-radius: 15px;
+  margin-bottom: 20px;
+  box-shadow: 0 0 15px #ff004c;
+  background: #000;
+}
+
+#slideshow img {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  opacity: 0;
+  transition: opacity 1s ease-in-out, transform 1s ease;
+  border-radius: 15px;
+  object-fit: contain;
+}
+
+#typedMessage {
+  display: none;
+  color: #fff;
+  font-size: 22px;
+  margin-top: 15px;
+  text-shadow: 0 0 15px #ff66a3;
+  white-space: pre-wrap;
+  text-align: center;
+}
+
+audio {
+  display: none;
+}
+</style>
+</head>
+<body>
+
+<div id="clickText">Click here</div>
+<div id="myFamilyTitle">My Family ❤️</div>
+
+<div id="slideshow"></div>
+<div id="typedMessage"></div>
+
+<audio id="music" loop>
+  <source src="https://files.catbox.moe/vi0vjm.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+const clickText = document.getElementById('clickText');
+const myFamilyTitle = document.getElementById('myFamilyTitle');
+const slideshow = document.getElementById('slideshow');
+const typedMessage = document.getElementById('typedMessage');
+const music = document.getElementById('music');
+
+const messages = [
+  {text:`Dad,
+thank you for always being there for me, supporting me in everything,
+thank you for your advice and for always wanting me to be my best.
+And don’t worry, I’ll keep being a little scammer anyway ❤️
+Thanks for teasing us all the time!`,
+   images:[...Array(10)].map((_,i)=>`images/dad${i+1}.jpg`)},
+
+  {text:`Mom,
+thank you for being in our lives, the warm and loving part of our home,
+for always making delicious food and taking care of us ❤️`,
+   images:[...Array(10)].map((_,i)=>`images/mom${i+1}.jpg`)},
+
+  {text:`Lama,
+our doctor, please graduate soon — we can’t wait to visit your clinic!
+thank you for making us laugh and showing up at family occasions ❤️`,
+   images:[...Array(10)].map((_,i)=>`images/lama${i+1}.jpg`)},
+
+  {text:`Raneem,
+study well so you can graduate, work, and support me and Lama.
+thank you for your kindness, warm heart, and for always thinking of all of us ❤️`,
+   images:[...Array(10)].map((_,i)=>`images/raneem${i+1}.jpg`)},
+
+  {text:`Finally Adam,
+the little troublemaker of the house who gets all the spoiling from us,
+thank you for always buying things for us, honestly you’re a great brother ❤️`,
+   images:[...Array(10)].map((_,i)=>`images/adam${i+1}.jpg`)},
+
+  {text:`My family,
+I wanted to make you all happy with something simple.
+Even though each of us has our own personality and everyone has different traits, we still love each other and haven’t hurt each other until now.
+May God keep us together always.
+I love you all ❤️
+Even though we tease each other sometimes.`,
+   images:['images/family1.jpg']} // صورة العائلة واحدة وثابتة
+];
+
+// Floating hearts and bubbles
+function createHeartBubble() {
+  let heart = document.createElement('div');
+  heart.innerHTML = '❤';
+  heart.className = 'heart';
+  heart.style.left = Math.random() * 100 + 'vw';
+  heart.style.fontSize = 10 + Math.random() * 25 + 'px';
+  heart.style.animationDuration = 4 + Math.random() * 4 + 's';
+  document.body.appendChild(heart);
+  setTimeout(() => heart.remove(), 7000);
+
+  let bubble = document.createElement('div');
+  bubble.innerHTML = '•';
+  bubble.className = 'bubble';
+  bubble.style.left = Math.random() * 100 + 'vw';
+  bubble.style.fontSize = 5 + Math.random() * 15 + 'px';
+  bubble.style.animationDuration = 3 + Math.random() * 4 + 's';
+  document.body.appendChild(bubble);
+  setTimeout(() => bubble.remove(), 7000);
+}
+
+// دفعة كبيرة من القلوب فور فتح الصفحة
+for(let i=0;i<30;i++) createHeartBubble();
+
+// ثم تستمر القلوب والفُقاعات كل 300ms
+setInterval(createHeartBubble, 300);
+
+// Click start
+clickText.addEventListener('click', () => {
+  clickText.style.display = 'none';
+  myFamilyTitle.style.display = 'block';
+  slideshow.style.display = 'block';
+  music.play();
+  showMessageAndImages(0);
+});
+
+// Typing effect
+function typeText(text, element, i, callback) {
+  if(i < text.length) {
+    element.innerHTML += text[i];
+    setTimeout(() => typeText(text, element, i+1, callback), 50);
+  } else callback();
+}
+
+function eraseText(element, callback) {
+  let text = element.innerHTML;
+  let i = text.length;
+  function erase() {
+    if(i > 0) {
+      element.innerHTML = text.substring(0, i-1);
+      i--;
+      setTimeout(erase, 60);
+    } else callback();
+  }
+  erase();
+}
+
+function showSlideshowImages(images, stopAtLast=false) {
+  slideshow.innerHTML = "";
+  images.forEach(src => {
+    const img = document.createElement('img');
+    img.src = src;
+    img.style.transform = 'scale(1)';
+    slideshow.appendChild(img);
+  });
+  let idx = 0;
+  const slides = slideshow.getElementsByTagName('img');
+  for(let i=0;i<slides.length;i++) slides[i].style.opacity=0;
+  slides[0].style.opacity=1;
+  slides[0].style.transform='scale(1.05)';
+
+  if(stopAtLast && images.length === 1) return; // صورة العائلة ثابتة
+
+  return setInterval(() => {
+    slides[idx].style.opacity=0;
+    slides[idx].style.transform='scale(1)';
+    idx = (idx+1) % slides.length;
+    slides[idx].style.opacity=1;
+    slides[idx].style.transform='scale(1.05)';
+  },3000);
+}
+
+function showMessageAndImages(index) {
+  if(index >= messages.length) return;
+  typedMessage.style.display='block';
+  const stopAtLast = (index === messages.length -1); // آخر جزء صورة العائلة
+  const interval = showSlideshowImages(messages[index].images, stopAtLast);
+  typeText(messages[index].text, typedMessage, 0, ()=>{
+    if(index < messages.length-1){
+      setTimeout(()=>{
+        eraseText(typedMessage, ()=>{
+          if(!stopAtLast) clearInterval(interval);
+          showMessageAndImages(index+1);
+        });
+      }, 700);
+    }
+  });
+}
+</script>
+</body>
+</html>
+
+
+
+
